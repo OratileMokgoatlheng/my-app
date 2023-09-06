@@ -11,7 +11,13 @@ function EventLogistics(props) {
     month: 'long',
     year: 'numeric',
   });
+  console.log(address)
+  console.log( date)
+  console.log( image)
+  
+
   const addressText = address
+
 
   return (
     <section className={classes.logistics}>
