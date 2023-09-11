@@ -10,21 +10,19 @@ import ErrorAlert from "@/components/ui/error-alert";
 function FilteredEventsPage(props) {
   const router = useRouter();
 
-  const filterData = router.query.slug;
-console.log(filterData)
-  if (!filterData) {
-    return <p className="center">Loading...</p>;
-  }
+  //   const filterData = router.query.slug;
+  // console.log(filterData)
+  //   if (!filterData) {
+  //     return <p className="center">Loading...</p>;
+  //   }
 
-  const filteredYear = filterData[0];
-  const filteredMonth = filterData[1];
+  //   const filteredYear = filterData[0];
+  //   const filteredMonth = filterData[1];
 
-  const numYear = +filteredYear;
-  const numMonth = +filteredMonth;
+  //   const numYear = +filteredYear;
+  //   const numMonth = +filteredMonth;
 
-  if (
-   props.hasError
-  ) {
+  if (props.hasError) {
     return (
       <Fragment>
         <ErrorAlert>Ivalid filter. Please Adjust your values!</ErrorAlert>
@@ -35,13 +33,7 @@ console.log(filterData)
     );
   }
 
-  const filteredEvents = getFilteredEvents({
-    year: numYear,
-    month: numMonth,
-  });
-
-
- 
+  const filteredEvents = props.events;
 
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
@@ -54,7 +46,7 @@ console.log(filterData)
     );
   }
 
-  const date = new Date(numYear, numMonth - 1);
+  const date = new Date(props.date.year, props.date.month - 1);
 
   return (
     <Fragment>
@@ -64,9 +56,9 @@ console.log(filterData)
   );
 }
 
-export async function getServerSide(context){
-  const {params} = context
-  const filterData = params.slug
+export async function getServerSide(context) {
+  const { params } = context;
+  const filterData = params.slug;
 
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
@@ -75,7 +67,7 @@ export async function getServerSide(context){
   const numMonth = +filteredMonth;
 
   if (
-    isNaN(numYear)||
+    isNaN(numYear) ||
     isNaN(numMonth) ||
     numYear > 2030 ||
     numYear < 2021 ||
@@ -83,9 +75,9 @@ export async function getServerSide(context){
     numMonth > 12
   ) {
     return {
-      props: {hasError: true}
+      props: { hasError: true },
       // notFound: true,
-    }
+    };
   }
 
   const filteredEvents = await getFilteredEvents({
@@ -94,9 +86,13 @@ export async function getServerSide(context){
   });
   return {
     props: {
-      events: filteredEvents
-    }
-  }
+      events: filteredEvents,
+      date: {
+        year: numYear,
+        month: numMonth
+      }
+    },
+  };
 }
 
 export default FilteredEventsPage;
