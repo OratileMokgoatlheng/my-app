@@ -1,13 +1,18 @@
-function handler(req, res) {
-  if (req.method === "POST") {
-    const userEmail = req.body.email;
-    if (!userEmail || !userEmail.includes("@")) {
-      res.status(422).json({ message: "Invalid email address." });
-      return;
+import { MongoClient } from 'mongodb';
+async function handler(req, res) {
+    if(req.method === 'POST'){
+        const userEmail = req.body.email;
+        if(!userEmail || !userEmail.includes('@')){
+            res.status(422).json({message: 'Invalid email address.'});
+            return;
+        }
+       const client = await MongoClient.connect(
+        "mongodb+srv://OratileM:Godlyslayer2!1@cluster0.porzkjz.mongodb.net/?retryWrites=true&w=majority"
+        )
+            const db = client.db();
+          await db.collection('emails').insertOne({email: userEmail});
+        client.close();
+        res.status(201).json({ message: 'Signed up'});
     }
-    console.log(userEmail)
-    res.status(201).json({message: 'Signed up!'})
-  }
 }
-
 export default handler;
