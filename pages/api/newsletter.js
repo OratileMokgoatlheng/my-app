@@ -1,18 +1,34 @@
-import { MongoClient } from 'mongodb';
+
+import { connectDatabasee, insertDocument } from "@/helpers/db-util";
+
+
 async function handler(req, res) {
-    if(req.method === 'POST'){
-        const userEmail = req.body.email;
-        if(!userEmail || !userEmail.includes('@')){
-            res.status(422).json({message: 'Invalid email address.'});
-            return;
-        }
-       const client = await MongoClient.connect(
-        "mongodb+srv://OratileM:Godlyslayer2!1@cluster0.porzkjz.mongodb.net/?retryWrites=true&w=majority"
-        )
-            const db = client.db();
-          await db.collection('emails').insertOne({email: userEmail});
-        client.close();
-        res.status(201).json({ message: 'Signed up'});
+  if (req.method === "POST") {
+    const userEmail = req.body.email;
+    if (!userEmail || !userEmail.includes("@")) {
+      res.status(422).json({ message: "Invalid email address." });
+      return;
     }
+let client
+try{
+
+     client = await connectDatabasee()
+}catch(error){
+ res.status(500).json({message: 'Connecting to the database failed!'})
+ return
+}
+
+try{
+
+    await insertDocument(client, 'newsletter', { email: userEmail })
+    client.close();
+}catch(error){
+    res.status(500).json({message: 'Inserting data failed!'})
+    return
+}
+   
+
+    res.status(201).json({ message: "Signed up" });
+  }
 }
 export default handler;
