@@ -1,26 +1,29 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
-export async function connectDatabasee(){
-    const client = await MongoClient.connect(
-        "mongodb+srv://oramok883:YevFUzg9ze7cUZVW@cluster0.porzkjz.mongodb.netevents/?retryWrites=true&w=majority"
-      ); 
-      return client
+export async function connectDatabase() {
+  const client = await MongoClient.connect(
+    'mongodb+srv://oramok883:zsxWjIw0kKPXvzbC@cluster0.porzkjz.mongodb.net/?retryWrites=true&w=majority'
+  );
+
+  return client;
 }
 
-export async function insertDocument(client, collection, document){
-    const db = client.db()
-    const result = await db.collection(collection).insertOne(document);
-    return result
+export async function insertDocument(client, collection, document) {
+  const db = client.db();
+
+  const result = await db.collection(collection).insertOne(document);
+
+  return result;
 }
 
-export async function getAllDocuments(client, collection, sort){
-    const db = client.db();
+export async function getAllDocuments(client, collection, sort) {
+  const db = client.db();
 
-    const documents = await db
-      .collection(collection)
-      .find()
-      .sort(sort)
-      .toArray();
+  const documents = await db
+    .collection(collection)
+    .find()
+    .sort(sort)
+    .toArray();
 
-      return documents
+  return documents;
 }
